@@ -7,6 +7,7 @@ USE Restaurante;
 -- Tabela de Clientes
 CREATE TABLE IF NOT EXISTS Clientes( 
 	ID_cliente int(8) AUTO_INCREMENT, 
+	/*wsedfbnweirygb*/
 	CPF varchar(11) not null, 
 	Nome_cliente varchar(255),
 	Data_nascimento varchar(15),
