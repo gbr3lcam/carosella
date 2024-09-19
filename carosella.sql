@@ -7,15 +7,18 @@ USE Restaurante;
 -- Tabela de Clientes
 CREATE TABLE IF NOT EXISTS Clientes( 
 	ID_cliente int(8) AUTO_INCREMENT, 
-	/*wsedfbnweirygb*/
-	CPF varchar(11) not null, 
-	Nome_cliente varchar(255),
-	Data_nascimento varchar(15),
-	Endereco varchar(255), 
-	Email varchar(255), 
-	Telefone varchar(12),
-	Data_cadastro datetime, 
-	PRIMARY KEY (ID_cliente) 
+	CPF varchar(11) not null not null, 
+	Nome_cliente varchar(255) not null,
+	Data_nascimento varchar(15) not null,
+	Endereco varchar(255) not null, 
+	Email_cliente varchar(255) not null, 
+	Telefone varchar(12) not null,
+	Data_cadastro datetime not null, 
+    Estado varchar (2) not null,
+    CEP varchar (9) not null,
+    complemento varchar(50),
+    password varchar (255) not null,
+	PRIMARY KEY (ID_cliente, Email_cliente) 
 );
 
 -- Tabela de Filiais
@@ -111,8 +114,7 @@ CREATE TABLE IF NOT EXISTS Pedidos(
 	Data_pedido datetime,
 	PRIMARY KEY (ID_pedido), 
 	FOREIGN KEY (ID_cliente) REFERENCES Clientes(ID_cliente), 
-	FOREIGN KEY (ID_prato) REFERENCES Pratos (ID_prato), 
-	FOREIGN KEY (ID_bebida) REFERENCES Bebidas (ID_bebida) 
+	FOREIGN KEY (ID_prato) REFERENCES Pratos (ID_prato)
 ); 
 
 -- Tabela de Entregas
@@ -129,19 +131,21 @@ CREATE TABLE IF NOT EXISTS Entregas(
 CREATE TABLE IF NOT EXISTS Logins(
    ID_login int(8) AUTO_INCREMENT,
    ID_cliente int(8),
+   Email_cliente varchar(255) not null,
    Username varchar(255) not null,
    Password varchar(255) not null,
    PRIMARY KEY (ID_login),
-   FOREIGN KEY (ID_cliente) REFERENCES Clientes(ID_cliente)
-);
+   FOREIGN KEY (ID_cliente, Email_cliente) REFERENCES Clientes(ID_cliente, Email_cliente)
+   );
 
 -- Inserir dados na tabela Clientes
-INSERT INTO Clientes (CPF, Nome_cliente, Data_nascimento, Endereco, Email, Telefone, Data_cadastro) VALUES 
-('12345678901', 'Maria Silva', '10/07/1981', 'Rua A, 123', 'maria.silva@gmail.com', '9876543210', '2023-01-01 10:00:00'),
-('23456789012', 'João Souza', '30/02/1999', 'Rua B, 456', 'joao.souza@gmail.com', '9876543211', '2023-01-02 11:00:00'),
-('34567890123', 'Ana Pereira', '22/08/2001', 'Rua C, 789', 'ana.pereira@gmail.com', '9876543212', '2023-01-03 12:00:00'),
-('45678901234', 'Carlos Santos', '28/05/1974', 'Rua D, 101', 'carlos.santos@gmail.com', '9876543213', '2023-01-04 13:00:00'),
-('56789012345', 'Julia Oliveira', '26/01/1998', 'Rua E, 202', 'julia.oliveira@gmail.com', '9876543214', '2023-01-05 14:00:00');
+INSERT INTO Clientes (CPF, Nome_cliente, Data_nascimento, Endereco, Email_cliente, Telefone, Data_cadastro, Estado, CEP, password) VALUES 
+('12345678901', 'Maria Silva', '10/07/1981', 'Rua A, 123', 'maria.silva@gmail.com', '9876543210', '2023-01-01 10:00:00', 'SP', '01001000', '1234'),
+('23456789012', 'João Souza', '30/02/1999', 'Rua B, 456', 'joao.souza@gmail.com', '9876543211', '2023-01-02 11:00:00', 'RJ', '20040030', '4321'),
+('34567890123', 'Ana Pereira', '22/08/2001', 'Rua C, 789', 'ana.pereira@gmail.com', '9876543212', '2023-01-03 12:00:00', 'MG', '30140071', '1111'),
+('45678901234', 'Carlos Santos', '28/05/1974', 'Rua D, 101', 'carlos.santos@gmail.com', '9876543213', '2023-01-04 13:00:00', 'MG', '40010000', '2222'),
+('56789012345', 'Julia Oliveira', '26/01/1998', 'Rua E, 202', 'julia.oliveira@gmail.com', '9876543214', '2023-01-05 14:00:00', 'SP', '66010000', '3333');
+
 
 -- Inserir dados na tabela Filiais
 INSERT INTO Filiais (Endereco, Email, Telefone, Quant_mesas) VALUES 
@@ -149,7 +153,14 @@ INSERT INTO Filiais (Endereco, Email, Telefone, Quant_mesas) VALUES
 ('Rua das Flores, 200', 'filial2@restaurante.com', '3216549871', '30'),
 ('Avenida Brasil, 300', 'filial3@restaurante.com', '3216549872', '40'),
 ('Rua das Árvores, 400', 'filial4@restaurante.com', '3216549873', '25'),
-('Avenida Central, 500', 'filial5@restaurante.com', '3216549874', '40');
+('Avenida Central, 500', 'filial5@restaurante.com', '3216549874', '40'),
+('Rua do Comércio, 600', 'filial6@restaurante.com', '3216549875', '35'),
+('Praça da Liberdade, 700', 'filial7@restaurante.com', '3216549876', '50'),
+('Avenida da Paz, 800', 'filial8@restaurante.com', '3216549877', '20'),
+('Rua do Sol, 900', 'filial9@restaurante.com', '3216549878', '30'),
+('Avenida do Futuro, 1000', 'filial10@restaurante.com', '3216549879', '45'),
+('Rua dos Ventos, 1100', 'filial11@restaurante.com', '3216549880', '25');
+
 
 -- Inserir dados na tabela Funcionarios
 INSERT INTO Funcionarios (CPF, Nome_funcionario, Data_nascimento, Endereco, Email, Telefone, ID_filial, Cargo, Data_contatacao) VALUES 
@@ -165,13 +176,16 @@ INSERT INTO Funcionarios (CPF, Nome_funcionario, Data_nascimento, Endereco, Emai
 ('10987654321', 'Patrícia Nunes', '03/03/1993', 'Rua Y, 404', 'patricia.nunes@restaurante.com', '9876543224', 10, 'Cozinheira', '2023-02-10 19:00:00'),
 ('09876543211', 'Ricardo Silva', '30/11/2003', 'Rua Z, 505', 'ricardo.silva@restaurante.com', '9876543225', 11, 'Garçom', '2023-02-11 20:00:00');
 
+
+
 -- Inserir dados na tabela Reservas
 INSERT INTO Reservas (Data_reserva, ID_cliente, Mesa, ID_filial, Capacidade) VALUES 
 ('2023-03-01 19:00:00', 1, 'A1', 1, '3'),
 ('2023-03-02 20:00:00', 2, 'B2', 2, '5'),
 ('2023-03-03 18:00:00', 3, 'C3', 3, '1'),
 ('2023-03-04 21:00:00', 4, 'D4', 4, '4'),
-('2023-03-06 20:30:00', 6, 'F6', 6, '2');
+('2023-03-06 20:30:00', 5, 'F6', 6, '2');
+
 
 -- Inserir dados na tabela Fornecedores
 INSERT INTO Fornecedores (Nome_fornecedor, CNPJ, Tipo_material, Email, Telefone, Valor_material) VALUES 
@@ -179,11 +193,13 @@ INSERT INTO Fornecedores (Nome_fornecedor, CNPJ, Tipo_material, Email, Telefone,
 ('Fornecedor B', '23456789000112', 'Carnes', 'fornecedorb@gmail.com', '3216549871', 800.00),
 ('Fornecedor C', '34567890000123', 'Bebidas', 'fornecedorc@gmail.com', '3216549872', 300.00),
 ('Fornecedor D', '45678901000134', 'Laticínios', 'fornecedord@gmail.com', '3216549873', 400.00),
-('Fornecedor E', '67890123000156', 'Especiarias', 'fornecedorf@gmail.com', '3216549875', 150.00),
-('Fornecedor F', '89012345000178', 'Massas', 'fornecedorh@gmail.com', '3216549877', 350.00),
-('Fornecedor G', '90123456000189', 'Frutas', 'fornecedori@gmail.com', '3216549878', 600.00),
-('Fornecedor H', '01234567000190', 'Pães', 'fornecedorj@gmail.com', '3216549879', 250.00),
-('Fornecedor I', '12345678000191', 'Bebidas', 'fornecedork@gmail.com', '3216549880', 700.00);
+('Fornecedor E', '67890123000156', 'Especiarias', 'fornecedore@gmail.com', '3216549875', 150.00),
+('Fornecedor F', '89012345000178', 'Massas', 'fornecedorf@gmail.com', '3216549877', 350.00),
+('Fornecedor G', '90123456000189', 'Frutas', 'fornecedorg@gmail.com', '3216549878', 600.00),
+('Fornecedor H', '01234567000190', 'Pães', 'fornecedorh@gmail.com', '3216549879', 250.00),
+('Fornecedor I', '12345678000191', 'Bebidas', 'fornecedori@gmail.com', '3216549880', 700.00),
+('Fornecedor J', '23456789000192', 'Condimentos', 'fornecedorj@gmail.com', '3216549881', 450.00),
+('Fornecedor K', '34567890000193', 'Carnes', 'fornecedork@gmail.com', '3216549882', 200.00);
 
 -- Inserir dados na tabela Estoque
 INSERT INTO Estoque (ID_fornecedor, Quantidade, ID_filial) VALUES 
@@ -236,6 +252,22 @@ INSERT INTO Entregas (Endereco, ID_pedido, Data_entrega) VALUES
 ('Rua C, 789', 3, '2023-05-03 19:00:00');
 
 -- Inserir dados na tabela Logins
-INSERT INTO Logins (ID_cliente, Username, Password) VALUES
-(1, 'maria.silva', 'senha123'),
-(2, 'joao.souza', 'senha123');
+INSERT INTO Logins (ID_cliente, Username, Password, Email_cliente) VALUES
+(1, 'maria.silva', 'senha123','maria.silva@gmail.com'),
+(2, 'joao.souza', 'senha1234', 'joao.souza@gmail.com'),
+(3, 'ana.pereira', 'senha1235', 'ana.pereira@gmail.com'),
+(4, 'carlos.santos', 'senha1236', 'carlos.santos@gmail.com'),
+(5, 'julia.oloveira', 'senha1237', 'julia.oliveira@gmail.com');
+
+select * from clientes;
+select * from filiais;
+select * from funcionarios;
+select * from reservas;
+select * from fornecedores;
+select * from estoque;
+select * from pratos ;
+select * from ingredientes;
+select * from pedidos;
+select * from entregas;
+select * from logins;
+
