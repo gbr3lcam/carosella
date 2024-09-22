@@ -4,17 +4,207 @@
  */
 package com.mycompany.restaurantemain;
 
+import java.awt.Color;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author usuario
  */
 public class TelaReservas extends javax.swing.JFrame {
+    
+    
 
     /**
      * Creates new form TelaReservas
      */
     public TelaReservas() {
         initComponents();
+        btnConfirmar.addActionListener(evt -> reservarMesa());
+        
+        txtData.setText("Data");
+        txtData.setForeground(Color.GRAY);
+        
+        txtData.addFocusListener(new FocusListener() {
+    @Override
+    public void focusGained(FocusEvent e) {
+        
+        if (txtData.getText().equals("Data")) {
+            txtData.setText("");  
+            txtData.setForeground(Color.BLACK);  
+        }
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+       
+        if (txtData.getText().isEmpty()) {
+            txtData.setText("Data");  
+            txtData.setForeground(Color.GRAY);  
+        }
+    }
+});
+        txtHorario.setText("Horario");
+        txtHorario.setForeground(Color.GRAY);
+        
+        txtHorario.addFocusListener(new FocusListener() {
+    @Override
+    public void focusGained(FocusEvent e) {
+        
+        if (txtHorario.getText().equals("Horario")) {
+            txtHorario.setText("");  
+            txtHorario.setForeground(Color.BLACK);  
+        }
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+       
+        if (txtHorario.getText().isEmpty()) {
+            txtHorario.setText("Horario");  
+            txtHorario.setForeground(Color.GRAY);  
+        }
+    }
+});
+        txtQuantPessoas.setText("Quant. Pessoas");
+        txtQuantPessoas.setForeground(Color.GRAY);
+        
+        txtQuantPessoas.addFocusListener(new FocusListener() {
+    @Override
+    public void focusGained(FocusEvent e) {
+        
+        if (txtQuantPessoas.getText().equals("Quant. Pessoas")) {
+            txtQuantPessoas.setText("");  
+            txtQuantPessoas.setForeground(Color.BLACK);  
+        }
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+       
+        if (txtQuantPessoas.getText().isEmpty()) {
+            txtQuantPessoas.setText("Quant. Pessoas");  
+            txtQuantPessoas.setForeground(Color.GRAY);  
+        }
+    }
+});
+    }
+    
+    
+   
+    private void reservarMesa() {
+      
+        String data = txtData.getText();           
+        String horario = txtHorario.getText();    
+        String quantPessoas = txtQuantPessoas.getText();  
+        String filialSel = comFilial.getSelectedItem().toString();
+        
+         int idFilial = getFilialId(filialSel);
+
+        // Junta a data e o horário e converte para Timestamp (formato de data e hora do banco)
+        String dataHora = data + " " + horario;
+        Timestamp horaForm = Timestamp.valueOf(dataHora);  // Converte para Timestamp
+
+        // Definindo a conexão e o comando SQL
+        Connection conexao = null;
+        PreparedStatement getb = null;
+        
+        String sql = "INSERT INTO Reservas (Data_reserva, ID_cliente, Mesa, ID_filial, Capacidade, Quant_pessoas) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try {
+            // Abre a conexão com o banco de dados
+            conexao = ConexaoBanco.getConnection();
+            getb = conexao.prepareStatement(sql);
+
+            // Define os parâmetros para a inserção no banco de dados
+            getb.setTimestamp(1, horaForm);  // Define a data e horário
+            getb.setInt(2, 1);  // Supondo que o ID do cliente seja 1 (ajuste conforme sua lógica)
+            getb.setString(3, "Mesa 1");  // Colocamos "Mesa 1" de exemplo (você pode modificar)
+            getb.setInt(4, idFilial);  // Define o ID da filial
+            getb.setString(5, "9");  // Capacidade da mesa (ajuste conforme a sua lógica)
+            getb.setString(6, quantPessoas);  // Quantidade de pessoas
+
+            // Executa o comando SQL (insere no banco)
+            getb.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Reserva confirmada!");
+        }catch (SQLException e) {
+            // Mostra mensagem de erro caso haja problema na inserção
+           e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao confirmar reserva: ");
+        } finally {
+            // Fecha a conexão e o comando SQL
+            try {
+                if (getb != null) getb.close();
+                if (conexao != null) conexao.close();
+            }catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private int getFilialId(String filial) {
+        switch (filial) {
+            case "Avenida Principal, 100":
+                return 1;
+            case "Rua das Flores, 200":
+                return 2;
+            case "Avenida Brasil, 300":
+                return 3;
+            case "Rua das Árvores, 400":
+                return 4;
+            case "Avenida Central, 500":
+                return 5;
+            case "Rua do comercio":
+                return 6;
+            case "Praça da Liberdade":
+                return 7;
+            case "Avenida da Paz, 800":
+                return 8;
+            case "Rua do Sol, 900":
+                return 9;
+            case "Avenida do Futuro, 1000":
+                return 10;
+            case "Rua dos Ventos, 1100":
+                return 11;
+            default:
+                return 1;  
+        }
+    }   
+    
+     private int getFilialIdFromDB(String filial) {
+        Connection conexao = null;
+        PreparedStatement getb = null;
+        ResultSet resConsul = null;
+        
+        String sql = "SELECT ID_filial FROM Filiais WHERE Endereco = ?";
+        try {
+            conexao = ConexaoBanco.getConnection();
+            getb = conexao.prepareStatement(sql);
+            getb.setString(1, filial); 
+            
+            resConsul = getb.executeQuery();
+            if (resConsul.next()) {
+                return resConsul.getInt("ID_filial");  // Retorna o ID encontrado
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (resConsul != null) resConsul.close();
+                if (getb != null) getb.close();
+                if (conexao != null) conexao.close();
+            }catch (SQLException e) {
+                e.printStackTrace();
+            }
+             }
+        return -1;  // Retorna -1 se não encontrar o ID
     }
 
     /**
@@ -28,12 +218,12 @@ public class TelaReservas extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        selFilial = new javax.swing.JComboBox<>();
-        jTextField2 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jTextField3 = new javax.swing.JTextField();
+        txtData = new javax.swing.JTextField();
+        comFilial = new javax.swing.JComboBox<>();
+        txtQuantPessoas = new javax.swing.JTextField();
+        btnConfirmar = new javax.swing.JButton();
+        btnVoltar = new javax.swing.JButton();
+        txtHorario = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -42,21 +232,30 @@ public class TelaReservas extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("RESERVAS");
 
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.setText("Data");
+        txtData.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        selFilial.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comFilial.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Avenida Principal, 100", "Rua das Flores, 200", "Avenida Brasil, 300", "Rua das Árvores, 400", "Avenida Central, 500", "Rua do Comércio, 600", "Praça da Liberdade, 700", "Avenida da Paz, 800", "Rua do Sol, 900", "Avenida do Futuro, 1000", "Rua dos Ventos, 1100", " " }));
 
-        jTextField2.setText("Quant. Pessoas");
+        txtQuantPessoas.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        jButton2.setText("Confirmar");
-
-        jButton3.setText("Voltar");
-
-        jTextField3.setText("Horario");
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        btnConfirmar.setText("Confirmar");
+        btnConfirmar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                btnConfirmarActionPerformed(evt);
+            }
+        });
+
+        btnVoltar.setText("Voltar");
+        btnVoltar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVoltarActionPerformed(evt);
+            }
+        });
+
+        txtHorario.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtHorario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtHorarioActionPerformed(evt);
             }
         });
 
@@ -69,26 +268,26 @@ public class TelaReservas extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(157, 157, 157)
-                        .addComponent(jLabel1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(21, 21, 21)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(selFilial, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(comFilial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtQuantPessoas, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField3))))
+                                .addComponent(txtHorario, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(124, 124, 124)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(137, 137, 137)
+                        .addComponent(jLabel1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(105, 105, 105)
+                        .addComponent(btnConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(70, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -98,18 +297,18 @@ public class TelaReservas extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
-                    .addComponent(jTextField3))
+                    .addComponent(txtData, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                    .addComponent(txtHorario))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(selFilial, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
+                        .addComponent(comFilial, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
                         .addComponent(jLabel2))
-                    .addComponent(jTextField2))
+                    .addComponent(txtQuantPessoas))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnConfirmar, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(btnVoltar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(84, Short.MAX_VALUE))
         );
 
@@ -118,7 +317,7 @@ public class TelaReservas extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(90, Short.MAX_VALUE)
+                .addContainerGap(121, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(87, 87, 87))
         );
@@ -133,11 +332,25 @@ public class TelaReservas extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+    private void txtHorarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtHorarioActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
+        
+    }//GEN-LAST:event_txtHorarioActionPerformed
 
-    /**
+    private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
+        // TODO add your handling code here:
+        if (txtData.equals("Data") || txtHorario.equals("Horario") || txtQuantPessoas.equals("Quant. Pessoas")){
+            JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos corretamente!", "Campos Obrigatórios", JOptionPane.WARNING_MESSAGE);
+        return;
+        }
+    }//GEN-LAST:event_btnConfirmarActionPerformed
+
+    private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
+        // TODO add your handling code here:
+        new TelaReservarEPedido().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnVoltarActionPerformed
+     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -173,14 +386,14 @@ public class TelaReservas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btnConfirmar;
+    private javax.swing.JButton btnVoltar;
+    private javax.swing.JComboBox<String> comFilial;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JComboBox<String> selFilial;
+    private javax.swing.JTextField txtData;
+    private javax.swing.JTextField txtHorario;
+    private javax.swing.JTextField txtQuantPessoas;
     // End of variables declaration//GEN-END:variables
 }

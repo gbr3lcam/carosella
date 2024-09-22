@@ -46,6 +46,7 @@ public class TelaLoginRestaurante extends javax.swing.JFrame {
 
             if (resulCon.next()) {
                 // Login bem-sucedido, ir para a tela de boas-vindas
+                int idCliente = resulCon.getInt("ID_cliente");
                 JOptionPane.showMessageDialog(this, "Bem-vindo(a), " + resulCon.getString("Username") + "!");
                 abrirTelaBemVindo();
             } else {
@@ -181,9 +182,9 @@ public class TelaLoginRestaurante extends javax.swing.JFrame {
 
     private void btnCadastreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastreActionPerformed
         // TODO add your handling code here:
-       // Aqui você abriria a tela de cadastro:
+        
         new TelaCadastroRestaurante().setVisible(true);
-        this.dispose(); // Fecha a tela de login
+        this.dispose(); 
     }//GEN-LAST:event_btnCadastreActionPerformed
 
     /**
@@ -217,6 +218,7 @@ public class TelaLoginRestaurante extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new TelaLoginRestaurante().setVisible(true);
+                
             }
         });
     }
