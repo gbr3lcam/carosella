@@ -56,8 +56,8 @@ public class TelaCadastroRestaurante extends javax.swing.JFrame {
     public void focusGained(FocusEvent e) {
         // Quando o campo ganha foco (clicar nele)
         if (txtEmail.getText().equals("Email")) {
-            txtEmail.setText("");  
-            txtEmail.setForeground(Color.BLACK); 
+            txtEmail.setText("");  // Remove o placeholder
+            txtEmail.setForeground(Color.BLACK);  // Muda a cor do texto para preto
         }
     }
 
@@ -65,8 +65,8 @@ public class TelaCadastroRestaurante extends javax.swing.JFrame {
     public void focusLost(FocusEvent e) {
         // Quando o campo perde o foco (clicar fora)
         if (txtEmail.getText().isEmpty()) {
-            txtEmail.setText("Email");  
-            txtEmail.setForeground(Color.GRAY);  
+            txtEmail.setText("Email");  // Coloca o placeholder de volta
+            txtEmail.setForeground(Color.GRAY);  // Define o texto como cinza novamente
         }
     }
 });
@@ -331,6 +331,7 @@ public class TelaCadastroRestaurante extends javax.swing.JFrame {
         txtBairro = new javax.swing.JTextField();
         comEstado = new javax.swing.JComboBox<>();
         txtSenha = new javax.swing.JPasswordField();
+        jLabel2 = new javax.swing.JLabel();
         btnCadastrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -360,7 +361,7 @@ public class TelaCadastroRestaurante extends javax.swing.JFrame {
 
         comEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" }));
 
-        txtSenha.setText("jPasswordField1");
+        jLabel2.setText("Senha:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -370,6 +371,8 @@ public class TelaCadastroRestaurante extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGap(89, 89, 89)
@@ -425,7 +428,9 @@ public class TelaCadastroRestaurante extends javax.swing.JFrame {
                         .addComponent(txtCep, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(comEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
@@ -465,23 +470,30 @@ public class TelaCadastroRestaurante extends javax.swing.JFrame {
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
         // TODO add your handling code here:
-        String nome = txtNome.getText();
-        String cpf = txtCpf.getText();
-        String dataNascimento = txtDataNascimento.getText();
-        String email = txtEmail.getText();
-        String telefone = txtTelefone.getText();
-        String endereco = txtEndereço.getText();
-        String bairro = txtBairro.getText();
-        String complemento = txtComplemento.getText();
-        String cep = txtCep.getText();
-        String estado = comEstado.getSelectedItem().toString();
-        String senha = new String(txtSenha.getPassword());
-        String Username = txtNome.getText();
+        String nome = txtNome.getText().trim();
+        String cpf = txtCpf.getText().trim();
+        String dataNascimento = txtDataNascimento.getText().trim();
+        String email = txtEmail.getText().trim();
+        String telefone = txtTelefone.getText().trim();
+        String endereco = txtEndereço.getText().trim();
+        String bairro = txtBairro.getText().trim();
+        String complemento = txtComplemento.getText().trim();
+        String cep = txtCep.getText().trim();
+        String estado = comEstado.getSelectedItem().toString().trim();
+        String senha = new String(txtSenha.getPassword()).trim();
+        String Username = txtNome.getText().trim();
         
-        if (txtComplemento.getText().equals("Complemento(opcional)")){
-            txtComplemento.setText("");
-        }
+        if (nome.equals("Nome") || cpf.equals("CPF") || dataNascimento.equals("Data nasc.") || 
+        email.equals("Email") || telefone.equals("Telefone") || endereco.equals("Endereço") ||
+        bairro.equals("Bairro") || complemento.equals("Complemento") || cep.equals("CEP") || senha.isEmpty()) {
         
+        JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos corretamente!", "Campos Obrigatórios", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+        if (complemento.equals("Complemento(opcional)") || complemento.isEmpty()) {
+        complemento = "";  
+    }
+                
         
         TelaCadastroRestaurante cadastro = new TelaCadastroRestaurante();
         cadastro.cadastrarCliente(nome, cpf, dataNascimento, email, telefone, endereco, bairro, complemento, cep, estado, senha, Username );
@@ -529,6 +541,7 @@ public class TelaCadastroRestaurante extends javax.swing.JFrame {
     private javax.swing.JButton btnCadastrar;
     private javax.swing.JComboBox<String> comEstado;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField txtBairro;
     private javax.swing.JTextField txtCep;
