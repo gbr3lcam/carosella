@@ -6,17 +6,18 @@ USE Restaurante;
 
 -- Tabela de Clientes
 CREATE TABLE IF NOT EXISTS Clientes( 
-	ID_cliente int(8) AUTO_INCREMENT, 
+	ID_cliente int(100) AUTO_INCREMENT, 
 	CPF varchar(11) not null not null, 
 	Nome_cliente varchar(255) not null,
 	Data_nascimento varchar(15) not null,
+    Bairro varchar (255) not null,
 	Endereco varchar(255) not null, 
+    Complemento varchar(255),
 	Email_cliente varchar(255) not null, 
 	Telefone varchar(12) not null,
 	Data_cadastro datetime not null, 
     Estado varchar (2) not null,
     CEP varchar (9) not null,
-    complemento varchar(50),
     password varchar (255) not null,
 	PRIMARY KEY (ID_cliente, Email_cliente) 
 );
@@ -139,12 +140,12 @@ CREATE TABLE IF NOT EXISTS Logins(
    );
 
 -- Inserir dados na tabela Clientes
-INSERT INTO Clientes (CPF, Nome_cliente, Data_nascimento, Endereco, Email_cliente, Telefone, Data_cadastro, Estado, CEP, password) VALUES 
-('12345678901', 'Maria Silva', '10/07/1981', 'Rua A, 123', 'maria.silva@gmail.com', '9876543210', '2023-01-01 10:00:00', 'SP', '01001000', '1234'),
-('23456789012', 'João Souza', '30/02/1999', 'Rua B, 456', 'joao.souza@gmail.com', '9876543211', '2023-01-02 11:00:00', 'RJ', '20040030', '4321'),
-('34567890123', 'Ana Pereira', '22/08/2001', 'Rua C, 789', 'ana.pereira@gmail.com', '9876543212', '2023-01-03 12:00:00', 'MG', '30140071', '1111'),
-('45678901234', 'Carlos Santos', '28/05/1974', 'Rua D, 101', 'carlos.santos@gmail.com', '9876543213', '2023-01-04 13:00:00', 'MG', '40010000', '2222'),
-('56789012345', 'Julia Oliveira', '26/01/1998', 'Rua E, 202', 'julia.oliveira@gmail.com', '9876543214', '2023-01-05 14:00:00', 'SP', '66010000', '3333');
+INSERT INTO Clientes (CPF, Nome_cliente, Data_nascimento, Endereco, Bairro, Complemento, Email_cliente, Telefone, Data_cadastro, Estado, CEP, password) VALUES 
+('12345678901', 'Maria Silva', '10/07/1981', 'Rua A, 123', 'Centro', '','maria.silva@gmail.com', '9876543210', '2023-01-01 10:00:00', 'SP', '01001000', 'senha123'),
+('23456789012', 'João Souza', '30/02/1999', 'Rua B, 456', 'Jardim das Flores', 'Apartamento 302','joao.souza@gmail.com', '9876543211', '2023-01-02 11:00:00', 'RJ', '20040030', 'senha1234'),
+('34567890123', 'Ana Pereira', '22/08/2001', 'Rua C, 789', 'Vila Nova', 'Bloco B, Casa 5', 'ana.pereira@gmail.com', '9876543212', '2023-01-03 12:00:00', 'MG', '30140071', 'senha1235'),
+('45678901234', 'Carlos Santos', '28/05/1974', 'Rua D, 101', 'Alto da Colina', '', 'carlos.santos@gmail.com', '9876543213', '2023-01-04 13:00:00', 'MG', '40010000', 'senha1236'),
+('56789012345', 'Julia Oliveira', '26/01/1998', 'Rua E, 202', 'Parque dos Sonhos', 'Cobertura 15', 'julia.oliveira@gmail.com', '9876543214', '2023-01-05 14:00:00', 'SP', '66010000', 'senha123');
 
 
 -- Inserir dados na tabela Filiais
