@@ -28,34 +28,38 @@ CREATE TABLE IF NOT EXISTS Filiais(
 	Endereco varchar(255), 
 	Email varchar(255), 
 	Telefone varchar(12), 
-	Quant_mesas int(3), 
+	Quant_mesas int(45), 
 	PRIMARY KEY (ID_filial) 
 );
 
 -- Tabela de Funcionários
 CREATE TABLE IF NOT EXISTS Funcionarios( 
-	ID_func int(5) AUTO_INCREMENT, 
-	CPF varchar(11) not null, 
+	ID_func int(100) AUTO_INCREMENT, 
+	CPF varchar(11) NOT NULL, 
 	Nome_funcionario varchar(255),
 	Data_nascimento varchar(15),
 	Endereco varchar(255), 
 	Email varchar(255), 
 	Telefone varchar(12), 
-	ID_filial int(3),
+	ID_filial int(15),
+    Estado varchar(2),
+    CEP varchar(9),
 	Cargo varchar(255),
 	Data_contatacao datetime,
+	password varchar(255) NOT NULL,
 	PRIMARY KEY (ID_func),
 	FOREIGN KEY (ID_filial) REFERENCES Filiais(ID_filial)
-); 
+);
 
 -- Tabela de Reservas
 CREATE TABLE IF NOT EXISTS Reservas(
-	ID_reserva int(5) AUTO_INCREMENT not null,
+	ID_reserva int(100) AUTO_INCREMENT not null,
 	Data_reserva datetime, 
-	ID_cliente int(8), 
-	Mesa varchar(5),
-	ID_filial int(3),
-	Capacidade varchar(2),
+	ID_cliente int(100), 
+	Mesa varchar(11),
+	ID_filial int(20),
+    Quant_Pessoas varchar(2),
+	Capacidade varchar(10),
 	PRIMARY KEY (ID_reserva),
 	FOREIGN KEY (ID_cliente) REFERENCES Clientes (ID_cliente),
 	FOREIGN KEY (ID_filial) REFERENCES Filiais(ID_filial)
@@ -164,28 +168,29 @@ INSERT INTO Filiais (Endereco, Email, Telefone, Quant_mesas) VALUES
 
 
 -- Inserir dados na tabela Funcionarios
-INSERT INTO Funcionarios (CPF, Nome_funcionario, Data_nascimento, Endereco, Email, Telefone, ID_filial, Cargo, Data_contatacao) VALUES 
-('09876543210', 'Fernando Gonçalves', '30/03/2001', 'Rua P, 404', 'fernando.goncalves@restaurante.com', '9876543215', 1, 'Garçom', '2023-02-01 10:00:00'),
-('98765432109', 'Bianca Ferreira', '28/06/1981', 'Rua Q, 505', 'bianca.ferreira@restaurante.com', '9876543216', 2, 'Cozinheira', '2023-02-02 11:00:00'),
-('87654321098', 'Lucas Barbosa', '20/10/2000', 'Rua R, 606', 'lucas.barbosa@restaurante.com', '9876543217', 3, 'Gerente', '2023-02-03 12:00:00'),
-('76543210987', 'Carla Lima', '01/04/1976', 'Rua S, 707', 'carla.lima@restaurante.com', '9876543218', 4, 'Atendente', '2023-02-04 13:00:00'),
-('65432109876', 'Marcos Silva', '05/09/1992', 'Rua T, 808', 'marcos.silva@restaurante.com', '9876543219', 5, 'Chef de Cozinha', '2023-02-05 14:00:00'),
-('54321098765', 'Renata Souza', '26/11/1981', 'Rua U, 909', 'renata.souza@restaurante.com', '9876543220', 6, 'Garçonete', '2023-02-06 15:00:00'),
-('43210987654', 'João Vieira', '29/11/1989', 'Rua V, 101', 'joao.vieira@restaurante.com', '9876543221', 7, 'Auxiliar de Cozinha', '2023-02-07 16:00:00'),
-('32109876543', 'Mariana Araújo', '25/10/2000', 'Rua W, 202', 'mariana.araujo@restaurante.com', '9876543222', 8, 'Recepcionista', '2023-02-08 17:00:00'),
-('21098765432', 'Rafael Carvalho', '31/01/1995', 'Rua X, 303', 'rafael.carvalho@restaurante.com', '9876543223', 9, 'Gerente de Filial', '2023-02-09 18:00:00'),
-('10987654321', 'Patrícia Nunes', '03/03/1993', 'Rua Y, 404', 'patricia.nunes@restaurante.com', '9876543224', 10, 'Cozinheira', '2023-02-10 19:00:00'),
-('09876543211', 'Ricardo Silva', '30/11/2003', 'Rua Z, 505', 'ricardo.silva@restaurante.com', '9876543225', 11, 'Garçom', '2023-02-11 20:00:00');
+INSERT INTO Funcionarios (CPF, Nome_funcionario, Data_nascimento, Endereco, Email, Telefone, ID_filial, Cargo, Data_contatacao, CEP, Estado, password) VALUES 
+('09876543210', 'Fernando Gonçalves', '30/03/2001', 'Rua P, 404', 'fernando.goncalves@restaurante.com', '9876543215', 1, 'Garçom', '2023-02-01 10:00:00', '40440000', 'BA', 'senha1'),
+('98765432109', 'Bianca Ferreira', '28/06/1981', 'Rua Q, 505', 'bianca.ferreira@restaurante.com', '9876543216', 2, 'Cozinheira', '2023-02-02 11:00:00', '50550000', 'SP', 'senha2'),
+('87654321098', 'Lucas Barbosa', '20/10/2000', 'Rua R, 606', 'lucas.barbosa@restaurante.com', '9876543217', 3, 'Gerente', '2023-02-03 12:00:00', '60660000', 'RJ', 'senha3'),
+('76543210987', 'Carla Lima', '01/04/1976', 'Rua S, 707', 'carla.lima@restaurante.com', '9876543218', 4, 'Atendente', '2023-02-04 13:00:00', '70770000', 'MG', 'senha4'),
+('65432109876', 'Marcos Silva', '05/09/1992', 'Rua T, 808', 'marcos.silva@restaurante.com', '9876543219', 5, 'Chef de Cozinha', '2023-02-05 14:00:00', '80880000', 'PR', 'senha5'),
+('54321098765', 'Renata Souza', '26/11/1981', 'Rua U, 909', 'renata.souza@restaurante.com', '9876543220', 6, 'Garçonete', '2023-02-06 15:00:00', '90990000', 'RS', 'senha6'),
+('43210987654', 'João Vieira', '29/11/1989', 'Rua V, 101', 'joao.vieira@restaurante.com', '9876543221', 7, 'Auxiliar de Cozinha', '2023-02-07 16:00:00', '10101000', 'BA', 'senha7'),
+('32109876543', 'Mariana Araújo', '25/10/2000', 'Rua W, 202', 'mariana.araujo@restaurante.com', '9876543222', 8, 'Recepcionista', '2023-02-08 17:00:00', '20202000', 'SP', 'senha8'),
+('21098765432', 'Rafael Carvalho', '31/01/1995', 'Rua X, 303', 'rafael.carvalho@restaurante.com', '9876543223', 9, 'Gerente de Filial', '2023-02-09 18:00:00', '30303000', 'RJ', 'senha9'),
+('10987654321', 'Patrícia Nunes', '03/03/1993', 'Rua Y, 404', 'patricia.nunes@restaurante.com', '9876543224', 10, 'Cozinheira', '2023-02-10 19:00:00', '40404000', 'MG', 'senha10'),
+('09876543211', 'Ricardo Silva', '30/11/2003', 'Rua Z, 505', 'ricardo.silva@restaurante.com', '9876543225', 11, 'Garçom', '2023-02-11 20:00:00', '50505000', 'PR', 'senha11');
+
 
 
 
 -- Inserir dados na tabela Reservas
-INSERT INTO Reservas (Data_reserva, ID_cliente, Mesa, ID_filial, Capacidade) VALUES 
-('2023-03-01 19:00:00', 1, 'A1', 1, '3'),
-('2023-03-02 20:00:00', 2, 'B2', 2, '5'),
-('2023-03-03 18:00:00', 3, 'C3', 3, '1'),
-('2023-03-04 21:00:00', 4, 'D4', 4, '4'),
-('2023-03-06 20:30:00', 5, 'F6', 6, '2');
+INSERT INTO Reservas (Data_reserva, ID_cliente, Quant_Pessoas, Mesa, ID_filial, Capacidade) VALUES 
+('2023-03-01 19:00:00', 1,'2', 'A1', 1, '3'),
+('2023-03-02 20:00:00', 2,'1','B2', 2, '5'),
+('2023-03-03 18:00:00', 3,'2', 'C3', 3, '1'),
+('2023-03-04 21:00:00', 4,'3', 'D4', 4, '4'),
+('2023-03-06 20:30:00', 5,'4', 'F6', 6, '2');
 
 
 -- Inserir dados na tabela Fornecedores

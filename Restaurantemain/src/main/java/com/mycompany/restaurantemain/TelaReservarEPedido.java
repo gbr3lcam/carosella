@@ -45,6 +45,11 @@ public class TelaReservarEPedido extends javax.swing.JFrame {
         });
 
         btnPedido.setText("Fazer pedido");
+        btnPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPedidoActionPerformed(evt);
+            }
+        });
 
         btnSair.setText("Sair");
         btnSair.addActionListener(new java.awt.event.ActionListener() {
@@ -117,6 +122,12 @@ public class TelaReservarEPedido extends javax.swing.JFrame {
         new TelaReservas().setVisible(true);
         this.dispose();//fecha tela de Bem VIndo
     }//GEN-LAST:event_btnReservaActionPerformed
+
+    private void btnPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPedidoActionPerformed
+        // TODO add your handling code here:
+        new TelaSelecionarPratos().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnPedidoActionPerformed
 
     /**
      * @param args the command line arguments
