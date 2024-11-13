@@ -4,6 +4,8 @@
  */
 package com.mycompany.restaurantemain;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author usuario
@@ -15,6 +17,13 @@ public class TelaReservarEPedido extends javax.swing.JFrame {
      */
     public TelaReservarEPedido() {
         initComponents();
+        Integer usuarioId = Session.getInstance().getUserId();
+            if (usuarioId != null) {
+         JOptionPane.showMessageDialog(this, "ID do cliente disponível na sessão: " + usuarioId);
+        } else {
+         JOptionPane.showMessageDialog(this, "Nenhum cliente logado.");
+        }
+
     }
 
     /**
@@ -31,6 +40,7 @@ public class TelaReservarEPedido extends javax.swing.JFrame {
         btnReserva = new javax.swing.JButton();
         btnPedido = new javax.swing.JButton();
         btnSair = new javax.swing.JButton();
+        TextoLogin = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -99,28 +109,47 @@ public class TelaReservarEPedido extends javax.swing.JFrame {
                 .addGap(104, 104, 104)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(114, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(TextoLogin)
+                .addGap(96, 96, 96))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(38, 38, 38)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addComponent(TextoLogin)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
-        // TODO add your handling code here:
+        
+        Session.getInstance().clearSession();
+
+    
+        JOptionPane.showMessageDialog(this, "Você foi deslogado com sucesso!");
+
         new TelaLoginRestaurante().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnSairActionPerformed
 
     private void btnReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReservaActionPerformed
         // TODO add your handling code here:
-        new TelaReservas().setVisible(true);
-        this.dispose();//fecha tela de Bem VIndo
+        Integer usuarioId = Session.getInstance().getUserId();
+
+    // Verifica se o ID do cliente está disponível
+    if (usuarioId != null) {
+       
+        new TelaReservas(usuarioId).setVisible(true);
+        this.dispose(); 
+    } else {
+        JOptionPane.showMessageDialog(this, "Nenhum cliente logado. Faça o login novamente.");
+    }
     }//GEN-LAST:event_btnReservaActionPerformed
 
     private void btnPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPedidoActionPerformed
@@ -165,6 +194,7 @@ public class TelaReservarEPedido extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel TextoLogin;
     private javax.swing.JButton btnPedido;
     private javax.swing.JButton btnReserva;
     private javax.swing.JButton btnSair;

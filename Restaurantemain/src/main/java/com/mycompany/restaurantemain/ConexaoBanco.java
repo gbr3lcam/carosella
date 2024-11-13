@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public class ConexaoBanco {
     private static final String URL = "jdbc:mysql://localhost:3306/Restaurante";//url do banco
     private static final String USER = "root";
-    private static final String PASSWORD = "302029cmA@*#"; //colocar senha do banco
+    private static final String PASSWORD = ""; //colocar senha do banco
     
     /**
      *

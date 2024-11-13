@@ -24,40 +24,45 @@ public class TelaLoginRestaurante extends javax.swing.JFrame {
      */
     public TelaLoginRestaurante() {
         initComponents();
-       
+       //nao esqueça de olhar o README.
     }
     
      // Método para verificar se o usuário existe
     private void existeUsuario(String email, String senha) {
-        if (email.isEmpty() || senha.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.", "ERRO", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        String sql = "SELECT * FROM logins WHERE Email_cliente = ? AND Password = ?";
-        
-        try (Connection conn = ConexaoBanco.getConnection();  
-             PreparedStatement prep = conn.prepareStatement(sql)) {
+    if (email.isEmpty() || senha.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.", "ERRO", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    String sql = "SELECT * FROM logins WHERE Email_cliente = ? AND Password = ?";
+    
+    try (Connection conn = ConexaoBanco.getConnection();  
+         PreparedStatement prep = conn.prepareStatement(sql)) {
 
-            prep.setString(1, email);
-            prep.setString(2, senha);
+        prep.setString(1, email);
+        prep.setString(2, senha);
 
-            ResultSet resulCon = prep.executeQuery();
+        ResultSet resulCon = prep.executeQuery();
 
-            if (resulCon.next()) {
-                // Login bem-sucedido, ir para a tela de boas-vindas
-                int idCliente = resulCon.getInt("ID_cliente");
-                JOptionPane.showMessageDialog(this, "Bem-vindo(a), " + resulCon.getString("Username") + "!");
-                abrirTelaBemVindo();
+        if (resulCon.next()) {
+            // Login bem-sucedido, armazena o ID do cliente na sessão
+            int idCliente = resulCon.getInt("ID_cliente");
+            Session.getInstance().setUserId(idCliente);
+
+            // Exibir confirmação de que o ID foi salvo
+            JOptionPane.showMessageDialog(this, "Bem-vindo(a), " + resulCon.getString("Username") + "!\nID do cliente salvo: " + Session.getInstance().getUserId());
+
+             abrirTelaBemVindo();
             } else {
-                // Email ou senha incorretos
-                JOptionPane.showMessageDialog(this, "Email ou senha incorretos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                 // Email ou senha incorretos
+            JOptionPane.showMessageDialog(this, "Email ou senha incorretos.", "Erro", JOptionPane.ERROR_MESSAGE);
             }
 
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Erro ao conectar com o banco de dados.", "Erro", JOptionPane.ERROR_MESSAGE);
-        }
+
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Erro ao conectar com o banco de dados.", "Erro", JOptionPane.ERROR_MESSAGE);
     }
+}
 
     // Método para abrir a tela de boas-vindas (implementação futura)
     private void abrirTelaBemVindo() {
@@ -185,7 +190,7 @@ public class TelaLoginRestaurante extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
         // TODO add your handling code here:
         String email = txtEmail.getText();

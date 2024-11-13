@@ -54,19 +54,19 @@ public class TelaCadastroFunc extends javax.swing.JFrame {
         txtEmail.addFocusListener(new FocusListener() {
     @Override
     public void focusGained(FocusEvent e) {
-        // Quando o campo ganha foco (clicar nele)
+        // Quando o campo ganha foco 
         if (txtEmail.getText().equals("Email")) {
             txtEmail.setText("");  // Remove o placeholder
-            txtEmail.setForeground(Color.BLACK);  // Muda a cor do texto para preto
+            txtEmail.setForeground(Color.BLACK);  
         }
     }
 
     @Override
     public void focusLost(FocusEvent e) {
-        // Quando o campo perde o foco (clicar fora)
+        // Quando o campo perde o foco 
         if (txtEmail.getText().isEmpty()) {
             txtEmail.setText("Email");  // Coloca o placeholder de volta
-            txtEmail.setForeground(Color.GRAY);  // Define o texto como cinza novamente
+            txtEmail.setForeground(Color.GRAY);  
         }
     }
 });

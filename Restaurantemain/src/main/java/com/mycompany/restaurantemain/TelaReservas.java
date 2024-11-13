@@ -19,14 +19,18 @@ import javax.swing.JOptionPane;
  * @author usuario
  */
 public class TelaReservas extends javax.swing.JFrame {
+
+    private final Integer clienteId;
     
     
 
     /**
      * Creates new form TelaReservas
      */
-    public TelaReservas() {
+    public TelaReservas(Integer clienteId) {
+        this.clienteId = clienteId; 
         initComponents();
+        JOptionPane.showMessageDialog(this, "ID do cliente na tela de reservas: " + clienteId);
         btnConfirmar.addActionListener(evt -> reservarMesa());
         
         txtData.setText("Data");
@@ -123,9 +127,9 @@ public class TelaReservas extends javax.swing.JFrame {
             conexao = ConexaoBanco.getConnection();
             getb = conexao.prepareStatement(sql);
 
-            // Define os parâmetros para a inserção no banco de dados
-            getb.setTimestamp(1, horaForm);  // Define a data e horário
-            getb.setInt(2, 1);  // Supondo que o ID do cliente seja 1 (ajuste conforme sua lógica)
+            
+            getb.setTimestamp(1, horaForm);  
+            getb.setInt(2, clienteId);  
             getb.setString(3, "Mesa 1");  
             getb.setInt(4, idFilial);  
             getb.setString(5, "9");  
@@ -136,7 +140,7 @@ public class TelaReservas extends javax.swing.JFrame {
             new TelaReservarEPedido().setVisible(true);
             this.dispose();
         }catch (SQLException e) {
-            // Mostra mensagem de erro caso haja problema na inserção
+            
            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Erro ao confirmar reserva: " + e.getMessage());
         } finally {
@@ -381,7 +385,7 @@ public class TelaReservas extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TelaReservas().setVisible(true);
+                new TelaLoginRestaurante().setVisible(true);
             }
         });
     }

@@ -57,7 +57,7 @@ public class TelaCadastroRestaurante extends javax.swing.JFrame {
         // Quando o campo ganha foco (clicar nele)
         if (txtEmail.getText().equals("Email")) {
             txtEmail.setText("");  // Remove o placeholder
-            txtEmail.setForeground(Color.BLACK);  // Muda a cor do texto para preto
+            txtEmail.setForeground(Color.BLACK);  
         }
     }
 
@@ -66,7 +66,7 @@ public class TelaCadastroRestaurante extends javax.swing.JFrame {
         // Quando o campo perde o foco (clicar fora)
         if (txtEmail.getText().isEmpty()) {
             txtEmail.setText("Email");  // Coloca o placeholder de volta
-            txtEmail.setForeground(Color.GRAY);  // Define o texto como cinza novamente
+            txtEmail.setForeground(Color.GRAY);  
         }
     }
 });
